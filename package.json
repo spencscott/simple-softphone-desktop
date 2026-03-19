@@ -1,0 +1,72 @@
+{
+  "name": "simple-softphone",
+  "version": "1.0.0",
+  "description": "Simple Softphone - AI SIP Client Desktop App",
+  "main": "main.js",
+  "author": "SimpleSoftphone.com",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.simplesoftphone.app",
+    "productName": "Simple Softphone",
+    "copyright": "Copyright © 2026 SimpleSoftphone.com",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Simple Softphone",
+      "include": "build/installer.nsh"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns",
+      "category": "public.app-category.business"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png",
+      "category": "Network"
+    },
+    "protocols": [
+      {
+        "name": "Tel Protocol",
+        "schemes": ["tel"]
+      },
+      {
+        "name": "SIP Protocol",
+        "schemes": ["sip"]
+      }
+    ],
+    "files": [
+      "main.js",
+      "preload.js",
+      "build/**/*"
+    ]
+  }
+}
