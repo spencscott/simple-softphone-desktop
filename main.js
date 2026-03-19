@@ -2,7 +2,7 @@ const { app, BrowserWindow, Tray, Menu, shell, nativeImage, dialog } = require("
 const path = require("path");
 const Store = require("electron-store");
 
-const APP_URL = "https://YOUR-APP-NAME.replit.app";
+const APP_URL = "https://app.simplesoftphone.com";
 
 const store = new Store({
   defaults: {
