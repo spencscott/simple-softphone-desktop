@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, shell, nativeImage, dialog } = require("electron");
+const { app, BrowserWindow, Tray, Menu, shell, nativeImage, dialog, ipcMain } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
 
@@ -211,6 +211,36 @@ if (!gotTheLock) {
     if (telArg) {
       handleTelProtocol(telArg);
     }
+  });
+
+  let alwaysOnTopTimer = null;
+
+  function popWindowForIncomingCall() {
+    if (!mainWindow) return;
+    if (alwaysOnTopTimer) {
+      clearTimeout(alwaysOnTopTimer);
+      alwaysOnTopTimer = null;
+    }
+    mainWindow.setAlwaysOnTop(true, "screen-saver");
+    mainWindow.show();
+    mainWindow.focus();
+    // Stay above everything for 8 seconds, then revert so user can move other windows on top
+    alwaysOnTopTimer = setTimeout(() => {
+      if (mainWindow) mainWindow.setAlwaysOnTop(false);
+      alwaysOnTopTimer = null;
+    }, 8000);
+  }
+
+  ipcMain.on("incoming-call", (_event, { callerName, callerNumber }) => {
+    popWindowForIncomingCall();
+  });
+
+  ipcMain.on("call-ended", () => {
+    if (alwaysOnTopTimer) {
+      clearTimeout(alwaysOnTopTimer);
+      alwaysOnTopTimer = null;
+    }
+    if (mainWindow) mainWindow.setAlwaysOnTop(false);
   });
 
   app.whenReady().then(() => {
