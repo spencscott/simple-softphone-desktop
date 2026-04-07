@@ -44,9 +44,38 @@ function createWindow() {
 
   mainWindow.loadURL(APP_URL);
 
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
+  const OAUTH_WINDOW_NAMES = new Set(["rc-auth"]);
+  const isOAuthWindow = (frameName) =>
+    frameName && (frameName.endsWith("-oauth") || OAUTH_WINDOW_NAMES.has(frameName));
+
+  mainWindow.webContents.setWindowOpenHandler(({ url, frameName }) => {
+    if (isOAuthWindow(frameName)) {
+      return {
+        action: "allow",
+        overrideBrowserWindowOptions: {
+          width: 600,
+          height: 700,
+          autoHideMenuBar: true,
+          webPreferences: {
+            contextIsolation: true,
+            nodeIntegration: false,
+          },
+        },
+      };
+    }
+    if (url && url !== "about:blank") {
+      shell.openExternal(url);
+    }
     return { action: "deny" };
+  });
+
+  mainWindow.webContents.on("did-create-window", (childWindow) => {
+    childWindow.webContents.setWindowOpenHandler(({ url }) => {
+      if (url && url !== "about:blank") {
+        shell.openExternal(url);
+      }
+      return { action: "deny" };
+    });
   });
 
   mainWindow.webContents.on("did-finish-load", () => {
