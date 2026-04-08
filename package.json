@@ -12,7 +12,8 @@
     "build:linux": "electron-builder --linux"
   },
   "dependencies": {
-    "electron-store": "^8.2.0"
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.3.0"
   },
   "devDependencies": {
     "electron": "^33.2.0",
@@ -22,6 +23,11 @@
     "appId": "com.simplesoftphone.app",
     "productName": "Simple Softphone",
     "copyright": "Copyright © 2026 SimpleSoftphone.com",
+    "publish": {
+      "provider": "github",
+      "owner": "spencscott",
+      "repo": "simple-softphone-desktop"
+    },
     "directories": {
       "output": "dist"
     },
@@ -44,7 +50,12 @@
       "include": "build/installer.nsh"
     },
     "mac": {
-      "target": "dmg",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        }
+      ],
       "icon": "build/icon.icns",
       "category": "public.app-category.business"
     },

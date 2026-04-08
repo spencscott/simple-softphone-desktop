@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Tray, Menu, shell, nativeImage, dialog, ipcMain } = require("electron");
 const path = require("path");
 const Store = require("electron-store");
+const { autoUpdater } = require("electron-updater");
 
 const APP_URL = "https://app.simplesoftphone.com";
 
@@ -22,6 +23,36 @@ function getIconPath() {
     return path.join(__dirname, "build", "icon.ico");
   }
   return path.join(__dirname, "build", "icon.png");
+}
+
+function setupAutoUpdater() {
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on("update-downloaded", () => {
+    dialog.showMessageBox({
+      type: "info",
+      title: "Update Ready",
+      message: "A new version of Simple Softphone is ready to install.",
+      detail: "The update has been downloaded. Restart the app now to apply it, or install it automatically next time you close the app.",
+      buttons: ["Restart Now", "Later"],
+      defaultId: 0,
+    }).then(({ response }) => {
+      if (response === 0) {
+        autoUpdater.quitAndInstall();
+      }
+    });
+  });
+
+  autoUpdater.on("error", (err) => {
+    console.error("[AutoUpdater] Error:", err?.message || err);
+  });
+
+  setTimeout(() => {
+    autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      console.error("[AutoUpdater] Update check failed:", err?.message || err);
+    });
+  }, 5000);
 }
 
 function createWindow() {
@@ -279,6 +310,7 @@ if (!gotTheLock) {
 
     createWindow();
     createTray();
+    setupAutoUpdater();
 
     const telArg = process.argv.find(
       (arg) => arg.startsWith("tel:") || arg.startsWith("sip:")
