@@ -32,6 +32,7 @@
       "output": "dist"
     },
     "win": {
+      "artifactName": "SimpleSoftphone-Setup.exe",
       "target": [
         {
           "target": "nsis",
@@ -50,20 +51,13 @@
       "include": "build/installer.nsh"
     },
     "mac": {
+      "artifactName": "SimpleSoftphone.dmg",
       "target": [
-<<<<<<< HEAD
         {
           "target": "dmg",
           "arch": ["universal"]
         }
       ],
-=======
-    {
-      "target": "dmg",
-      "arch": ["universal"]
-    }
-    ],
->>>>>>> fe107484989a467f55e9449a72f18bbb34c75856
       "icon": "build/icon.icns",
       "category": "public.app-category.business"
     },
