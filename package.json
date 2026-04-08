@@ -44,7 +44,12 @@
       "include": "build/installer.nsh"
     },
     "mac": {
+      "target": [
+    {
       "target": "dmg",
+      "arch": ["universal"]
+    }
+    ],
       "icon": "build/icon.icns",
       "category": "public.app-category.business"
     },
